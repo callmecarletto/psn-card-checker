@@ -6,7 +6,21 @@ import requests
 from playwright.sync_api import sync_playwright
 
 
-URL = "https://cyberleek.ar.io/"
+SITES = [
+    {
+        "name": "Cyberleek AR",
+        "url": "https://cyberleek.ar.io/"
+    },
+    {
+        "name": "Cyberleek Turbo Gateway",
+        "url": "https://cyberleek.turbo-gateway.com/"
+    },
+    {
+        "name": "Cyberleek Vilenarios",
+        "url": "https://cyberleek.vilenarios.com/"
+    }
+]
+
 STATE_FILE = "state.json"
 
 BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
@@ -31,7 +45,7 @@ def send_telegram(message):
     )
 
 
-def get_leeks_content():
+def get_leeks_content(site_url):
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
 
@@ -43,7 +57,7 @@ def get_leeks_content():
         )
 
         page.goto(
-            URL,
+            site_url,
             wait_until="domcontentloaded",
             timeout=60000
         )
@@ -72,59 +86,91 @@ def get_hash(content):
 
 def load_state():
     if not os.path.exists(STATE_FILE):
-        return None
+        return {}
 
     with open(STATE_FILE, "r") as file:
         data = json.load(file)
 
-    return data.get("hash")
+    if "sites" in data:
+        return data["sites"]
+
+    if "hash" in data:
+        return {
+            SITES[0]["url"]: data["hash"]
+        }
+
+    return {}
 
 
-def save_state(current_hash):
+def save_state(state):
     with open(STATE_FILE, "w") as file:
         json.dump(
             {
-                "hash": current_hash
+                "sites": state
             },
             file,
             indent=2
         )
 
 
-content = get_leeks_content()
-
-print("Contenuto LEEKS:")
-print(content)
-
-current_hash = get_hash(content)
-previous_hash = load_state()
+state = load_state()
+updated_state = state.copy()
+new_sites = []
+changes = []
 
 
-if previous_hash is None:
+for site in SITES:
+    site_name = site["name"]
+    site_url = site["url"]
 
-    print("Prima esecuzione.")
+    print(f"Controllo {site_name}: {site_url}")
 
-    save_state(current_hash)
+    try:
+        content = get_leeks_content(site_url)
+    except Exception as error:
+        print(f"Errore durante il controllo di {site_name}: {error}")
+        continue
+
+    print("Contenuto LEEKS:")
+    print(content)
+
+    current_hash = get_hash(content)
+    previous_hash = state.get(site_url)
+
+    if previous_hash is None:
+        print(f"Prima esecuzione per {site_name}.")
+        updated_state[site_url] = current_hash
+        new_sites.append(site)
+
+    elif current_hash != previous_hash:
+        print(f"CAMBIAMENTO RILEVATO per {site_name}!")
+        updated_state[site_url] = current_hash
+        changes.append(site)
+
+    else:
+        print(f"Nessun cambiamento per {site_name}.")
+
+
+if new_sites:
+    site_list = "\n".join(
+        f"- {site['name']}: {site['url']}"
+        for site in new_sites
+    )
 
     send_telegram(
-        "🟢 Cyberleek Monitor attivato.\n\n"
-        "Da ora controllerò la sezione LEEKS."
+        "🟢 Cyberleek Monitor attivato/aggiornato.\n\n"
+        "Da ora controllerò la sezione LEEKS su questi siti:\n"
+        f"{site_list}"
     )
 
 
-elif current_hash != previous_hash:
-
-    print("CAMBIAMENTO RILEVATO!")
-
+for site in changes:
     send_telegram(
         "🚨 NUOVO AGGIORNAMENTO CYBERLEEK\n\n"
+        f"Sito: {site['name']}\n"
         "La sezione LEEKS è cambiata.\n\n"
-        "https://cyberleek.ar.io/"
+        f"{site['url']}"
     )
 
-    save_state(current_hash)
 
-
-else:
-
-    print("Nessun cambiamento.")
+save_state(updated_state)
