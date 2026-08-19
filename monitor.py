@@ -34,7 +34,7 @@ def send_telegram(message):
 
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 
-    requests.post(
+    response = requests.post(
         url,
         data={
             "chat_id": CHAT_ID,
@@ -43,6 +43,11 @@ def send_telegram(message):
         },
         timeout=20
     )
+
+    if response.ok:
+        print("Messaggio Telegram inviato.")
+    else:
+        print(f"Errore Telegram: {response.status_code} - {response.text}")
 
 
 def get_leeks_content(site_url):
@@ -117,6 +122,7 @@ state = load_state()
 updated_state = state.copy()
 new_sites = []
 changes = []
+manual_run = os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch"
 
 
 for site in SITES:
@@ -170,6 +176,13 @@ for site in changes:
         f"Sito: {site['name']}\n"
         "La sezione LEEKS è cambiata.\n\n"
         f"{site['url']}"
+    )
+
+
+if manual_run and not new_sites and not changes:
+    send_telegram(
+        "✅ Controllo Cyberleek completato.\n\n"
+        "Nessun cambiamento rilevato nella sezione LEEKS."
     )
 
 
