@@ -9,6 +9,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: cyberleek-monitor
+  cancel-in-progress: false
+
 jobs:
   monitor:
     runs-on: ubuntu-latest
@@ -38,8 +42,10 @@ jobs:
           git config user.name "Cyberleek Monitor"
           git config user.email "actions@github.com"
 
+          git pull --rebase --autostash origin main
+
           git add state.json
 
           git diff --cached --quiet || git commit -m "Update Cyberleek state"
 
-          git push
+          git push origin main
