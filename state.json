@@ -1,7 +1,7 @@
 {
   "sites": {
-    "https://cyberleek.ar.io/": "9924dd7101e2d5e7ef1aad12d43da498c667f0b53875db4a589994a6bc016911",
-    "https://cyberleek.turbo-gateway.com/": "4d79c214d73b25eb1fec29819d209d8de6797c7d6d5e7036a74ff3ded154eae0",
+    "https://cyberleek.ar.io/": "4d79c214d73b25eb1fec29819d209d8de6797c7d6d5e7036a74ff3ded154eae0",
+    "https://cyberleek.turbo-gateway.com/": "9924dd7101e2d5e7ef1aad12d43da498c667f0b53875db4a589994a6bc016911",
     "https://cyberleek.vilenarios.com/": "9924dd7101e2d5e7ef1aad12d43da498c667f0b53875db4a589994a6bc016911"
   }
 }
