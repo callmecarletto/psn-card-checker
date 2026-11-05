@@ -1,0 +1,36 @@
+name: Test Telegram
+
+# Avvialo da Actions -> Test Telegram -> Run workflow.
+# Fa un controllo vero di Eneba e manda il riepilogo su Telegram,
+# senza toccare lo stato del bot principale.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Controllo di prova
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          MANUAL_RUN: "true"
+          RUN_MINUTES: "0"
+          MIN_DISCOUNT: "15"
+          PRICE_FACTOR: "1.055"
+        run: |
+          cp state.json /tmp/test-state.json
+          STATE_FILE=/tmp/test-state.json python monitor.py
