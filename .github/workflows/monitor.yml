@@ -1,21 +1,35 @@
-name: Cyberleek Monitor
+name: Eneba PSN Monitor
 
 on:
   workflow_dispatch:
+    inputs:
+      chained:
+        description: "Avviato automaticamente dal run precedente (lascia vuoto)"
+        type: boolean
+        default: false
 
+  # Best effort: GitHub ritarda o salta spesso i cron. Serve anche da rete di sicurezza
+  # per far ripartire il ciclo se si interrompe.
   schedule:
     - cron: "*/5 * * * *"
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
-  group: cyberleek-monitor
+  group: eneba-monitor
   cancel-in-progress: false
+
+env:
+  MIN_DISCOUNT: "15"     # sconto minimo (%) rispetto al taglio per ricevere l'avviso
+  RUN_MINUTES: "0"       # 0 = un controllo per run; es. "340" = controlla per ~5h40 e poi si riavvia da solo
+  CHECK_INTERVAL: "60"   # secondi tra un controllo e l'altro quando RUN_MINUTES > 0
 
 jobs:
   monitor:
     runs-on: ubuntu-latest
+    timeout-minutes: 355
 
     steps:
       - name: Checkout repository
@@ -25,27 +39,31 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: pip
 
       - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          playwright install chromium
+        run: pip install -r requirements.txt
 
       - name: Run monitor
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          MANUAL_RUN: ${{ github.event_name == 'workflow_dispatch' && !inputs.chained }}
         run: python monitor.py
 
       - name: Save state
+        if: always()
         run: |
-          git config user.name "Cyberleek Monitor"
+          git config user.name "Eneba PSN Monitor"
           git config user.email "actions@github.com"
-
-          git pull --rebase --autostash origin main
-
           git add state.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Update Eneba state"
+          git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" || true
+          git push origin "HEAD:${GITHUB_REF_NAME}"
 
-          git diff --cached --quiet || git commit -m "Update Cyberleek state"
-
-          git push origin main
+      - name: Restart loop
+        if: ${{ !cancelled() && env.RUN_MINUTES != '0' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run monitor.yml --ref "${GITHUB_REF_NAME}" -f chained=true
