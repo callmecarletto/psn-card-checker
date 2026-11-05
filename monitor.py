@@ -41,7 +41,7 @@ HEADERS = {
     "Accept-Language": "it-IT,it;q=0.9,en;q=0.8",
 }
 
-STATE_FILE = "state.json"
+STATE_FILE = os.environ.get("STATE_FILE") or "state.json"
 FAIL_ALERT_AFTER = 3  # controlli falliti di fila prima di avvisare che il bot è "cieco"
 
 BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
@@ -62,7 +62,7 @@ FACE_RE = re.compile(r"Card\s+(\d+(?:[.,]\d+)?)\s*EUR", re.IGNORECASE)
 def send_telegram(message):
     if not BOT_TOKEN or not CHAT_ID:
         print("Telegram non configurato. Messaggio:\n" + message)
-        return
+        return False
     try:
         response = requests.post(
             f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
@@ -76,10 +76,20 @@ def send_telegram(message):
         )
         if response.ok:
             print("Messaggio Telegram inviato.")
-        else:
-            print(f"Errore Telegram: {response.status_code} - {response.text}")
+            return True
+        print(f"Errore Telegram: {response.status_code} - {response.text}")
     except requests.RequestException as error:
         print(f"Errore Telegram: {error}")
+    return False
+
+
+def internet_ok():
+    """True se si raggiunge Telegram: serve a distinguere 'niente internet' da 'Eneba bloccata'."""
+    try:
+        requests.head("https://api.telegram.org", timeout=8)
+        return True
+    except requests.RequestException:
+        return False
 
 
 # ---------------------------------------------------------------- Parsing
@@ -229,15 +239,17 @@ def check_once(session, state, first_run):
         if not cards:
             raise RuntimeError("nessuna card trovata (pagina cambiata o bloccata?)")
     except Exception as error:
+        if isinstance(error, (requests.ConnectionError, requests.Timeout)) and not internet_ok():
+            print("Nessuna connessione a internet: salto questo controllo.")
+            return None
         state["fail_count"] = state.get("fail_count", 0) + 1
         print(f"Controllo fallito ({state['fail_count']} di fila): {error}")
         if state["fail_count"] >= FAIL_ALERT_AFTER and not state.get("blind_alert_sent"):
-            send_telegram(
+            state["blind_alert_sent"] = send_telegram(
                 "⚠️ <b>Eneba PSN Monitor non riesce a leggere la pagina</b>\n\n"
                 f"Ultimo errore: {html.escape(str(error))[:300]}\n"
                 "Finché non si sblocca non posso avvisarti degli sconti."
             )
-            state["blind_alert_sent"] = True
         return None
 
     if state.get("blind_alert_sent"):
@@ -286,7 +298,8 @@ def check_once(session, state, first_run):
         state["_activation_sent_now"] = True
     else:
         for card, previous in new_deals:
-            send_telegram(deal_message(card, previous))
+            if not send_telegram(deal_message(card, previous)):
+                known[card["url"]]["alerted_price"] = previous  # riprovo al prossimo controllo
 
     return cards
 
