@@ -8,10 +8,10 @@ on:
         type: boolean
         default: false
 
-  # Best effort: GitHub ritarda o salta spesso i cron. Serve anche da rete di sicurezza
-  # per far ripartire il ciclo se si interrompe.
+  # Il ciclo si riavvia da solo a fine run (step "Restart loop").
+  # Questo cron è solo una rete di sicurezza per farlo ripartire se si interrompe.
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "7,37 * * * *"
 
 permissions:
   contents: write
@@ -23,7 +23,7 @@ concurrency:
 
 env:
   MIN_DISCOUNT: "15"     # sconto minimo (%) rispetto al taglio per ricevere l'avviso
-  RUN_MINUTES: "0"       # 0 = un controllo per run; es. "340" = controlla per ~5h40 e poi si riavvia da solo
+  LOOP_MINUTES: "340"    # repo pubblico: controlla per ~5h40 e poi si riavvia da solo
   CHECK_INTERVAL: "60"   # secondi tra un controllo e l'altro quando RUN_MINUTES > 0
   PRICE_FACTOR: "1.055"  # dai server GitHub (USA) Eneba mostra prezzi ~5,5% più alti che dall'Italia
 
@@ -45,8 +45,24 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      # Con repo privato i minuti gratis sono 2.000/mese: il ciclo continuo li finirebbe
+      # in un paio di giorni. Quindi il ciclo parte solo se il repo è pubblico.
+      - name: Choose mode
+        id: mode
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "$(gh api "repos/${GITHUB_REPOSITORY}" --jq .private)" = "false" ]; then
+            echo "run_minutes=${LOOP_MINUTES}" >> "$GITHUB_OUTPUT"
+            echo "Repo pubblico: ciclo continuo."
+          else
+            echo "run_minutes=0" >> "$GITHUB_OUTPUT"
+            echo "Repo privato: un solo controllo."
+          fi
+
       - name: Run monitor
         env:
+          RUN_MINUTES: ${{ steps.mode.outputs.run_minutes }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           MANUAL_RUN: ${{ github.event_name == 'workflow_dispatch' && !inputs.chained }}
@@ -64,7 +80,7 @@ jobs:
           git push origin "HEAD:${GITHUB_REF_NAME}"
 
       - name: Restart loop
-        if: ${{ !cancelled() && env.RUN_MINUTES != '0' }}
+        if: ${{ !cancelled() && steps.mode.outputs.run_minutes != '0' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run monitor.yml --ref "${GITHUB_REF_NAME}" -f chained=true
