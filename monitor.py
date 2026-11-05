@@ -9,6 +9,9 @@ Variabili d'ambiente:
   RUN_MINUTES      0 = un solo controllo; >0 = continua a controllare per N minuti
   CHECK_INTERVAL   secondi tra un controllo e l'altro in modalità loop (default 60)
   MANUAL_RUN       "true" = manda un riepilogo anche se non ci sono offerte
+  PRICE_FACTOR     ricarico di Eneba per il paese da cui parte il controllo. Dagli USA
+                   (server GitHub) i prezzi risultano ~5,5% più alti che dall'Italia
+                   (misurato il 5/11/2026): lì usa 1.055. Da un IP italiano usa 1.
 """
 
 import html
@@ -47,6 +50,8 @@ MIN_DISCOUNT = float(os.environ.get("MIN_DISCOUNT") or 15)
 RUN_MINUTES = float(os.environ.get("RUN_MINUTES") or 0)
 CHECK_INTERVAL = float(os.environ.get("CHECK_INTERVAL") or 60)
 MANUAL_RUN = (os.environ.get("MANUAL_RUN") or "").lower() == "true"
+PRICE_FACTOR = float(os.environ.get("PRICE_FACTOR") or 1)
+APPROX = "≈ " if abs(PRICE_FACTOR - 1) > 1e-9 else ""
 
 PRICE_RE = re.compile(r"(\d{1,3}(?:\.\d{3})*,\d{2})\s*€")
 FACE_RE = re.compile(r"Card\s+(\d+(?:[.,]\d+)?)\s*EUR", re.IGNORECASE)
@@ -136,7 +141,8 @@ def parse_cards(page_html):
             block = re.split(r"Cashback|Aggiungi al carrello", block)[0]
             prices = [parse_euro(p) for p in PRICE_RE.findall(block)]
             if prices:
-                card["price"] = prices[-1]
+                card["raw_price"] = prices[-1]
+                card["price"] = round(prices[-1] / PRICE_FACTOR, 2)
                 card["in_stock"] = True
                 card["discount"] = round((1 - card["price"] / face) * 100, 1)
 
@@ -189,7 +195,7 @@ def short_name(card):
 
 def deal_line(card):
     return (
-        f"• <b>{html.escape(short_name(card))}</b> a <b>{fmt_euro(card['price'])}</b> "
+        f"• <b>{html.escape(short_name(card))}</b> a <b>{APPROX}{fmt_euro(card['price'])}</b> "
         f"(-{fmt_pct(card['discount'])}%)\n  {html.escape(card['url'])}"
     )
 
@@ -202,7 +208,7 @@ def deal_message(card, previous_price=None):
         head,
         "",
         f"<b>{html.escape(short_name(card))}</b>",
-        f"Prezzo: <b>{fmt_euro(card['price'])}</b> invece di {fmt_euro(card['face'])} "
+        f"Prezzo: <b>{APPROX}{fmt_euro(card['price'])}</b> invece di {fmt_euro(card['face'])} "
         f"(<b>-{fmt_pct(card['discount'])}%</b>)",
     ]
     if previous_price is not None:
@@ -277,6 +283,7 @@ def check_once(session, state, first_run):
         if deals_now:
             text += "\n\n<b>Già in offerta adesso:</b>\n" + "\n".join(deal_line(c) for c in deals_now)
         send_telegram(text)
+        state["_activation_sent_now"] = True
     else:
         for card, previous in new_deals:
             send_telegram(deal_message(card, previous))
@@ -304,7 +311,10 @@ def main():
             break
         time.sleep(CHECK_INTERVAL)
 
-    if MANUAL_RUN and last_cards is not None:
+    activation_sent = state.pop("_activation_sent_now", False)
+    save_state(state)
+
+    if MANUAL_RUN and last_cards is not None and not activation_sent:
         deals = [c for c in last_cards if is_deal(c)]
         in_stock = [c for c in last_cards if c["in_stock"]]
         if deals:
