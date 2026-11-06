@@ -22,7 +22,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  MIN_DISCOUNT: "15"     # sconto minimo (%) rispetto al taglio per ricevere l'avviso
+  MIN_DISCOUNT: "20"     # sconto minimo (%) rispetto al taglio per ricevere l'avviso
   LOOP_MINUTES: "340"    # repo pubblico: controlla per ~5h40 e poi si riavvia da solo
   CHECK_INTERVAL: "60"   # secondi tra un controllo e l'altro quando RUN_MINUTES > 0
   PRICE_FACTOR: "1.055"  # dai server GitHub (USA) Eneba mostra prezzi ~5,5% più alti che dall'Italia

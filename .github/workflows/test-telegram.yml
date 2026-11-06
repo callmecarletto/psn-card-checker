@@ -29,7 +29,7 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           MANUAL_RUN: "true"
           RUN_MINUTES: "0"
-          MIN_DISCOUNT: "15"
+          MIN_DISCOUNT: "20"
           PRICE_FACTOR: "1.055"
         run: |
           cp state.json /tmp/test-state.json
