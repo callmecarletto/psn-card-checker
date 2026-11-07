@@ -24,6 +24,9 @@ concurrency:
 env:
   MIN_DISCOUNT: "20"     # sconto minimo (%) rispetto al taglio per ricevere l'avviso
   LOOP_MINUTES: "340"    # repo pubblico: controlla per ~5h40 e poi si riavvia da solo
+  MIN_DROP: "2"          # nuovo avviso sulla stessa card solo se scende ancora di almeno il 2% del taglio
+  REARM_MINUTES: "60"    # una card uscita dall'offerta può essere risegnalata dopo 60 minuti
+  PYTHONUNBUFFERED: "1"  # orari giusti nei log
   CHECK_INTERVAL: "60"   # secondi tra un controllo e l'altro quando RUN_MINUTES > 0
   PRICE_FACTOR: "1.055"  # dai server GitHub (USA) Eneba mostra prezzi ~5,5% più alti che dall'Italia
 

@@ -9,6 +9,8 @@ Variabili d'ambiente:
   RUN_MINUTES      0 = un solo controllo; >0 = continua a controllare per N minuti
   CHECK_INTERVAL   secondi tra un controllo e l'altro in modalità loop (default 60)
   MANUAL_RUN       "true" = manda un riepilogo anche se non ci sono offerte
+  MIN_DROP         % del taglio di cui deve scendere ancora il prezzo per un nuovo avviso (default 2)
+  REARM_MINUTES    minuti fuori offerta dopo cui la stessa card può essere risegnalata (default 60)
   PRICE_FACTOR     ricarico di Eneba per il paese da cui parte il controllo. Dagli USA
                    (server GitHub) i prezzi risultano ~5,5% più alti che dall'Italia
                    (misurato il 5/11/2026): lì usa 1.055. Da un IP italiano usa 1.
@@ -51,6 +53,8 @@ RUN_MINUTES = float(os.environ.get("RUN_MINUTES") or 0)
 CHECK_INTERVAL = float(os.environ.get("CHECK_INTERVAL") or 60)
 MANUAL_RUN = (os.environ.get("MANUAL_RUN") or "").lower() == "true"
 PRICE_FACTOR = float(os.environ.get("PRICE_FACTOR") or 1)
+MIN_DROP = float(os.environ.get("MIN_DROP") or 2)
+REARM_MINUTES = float(os.environ.get("REARM_MINUTES") or 60)
 APPROX = "≈ " if abs(PRICE_FACTOR - 1) > 1e-9 else ""
 
 PRICE_RE = re.compile(r"(\d{1,3}(?:\.\d{3})*,\d{2})\s*€")
@@ -265,16 +269,26 @@ def check_once(session, state, first_run):
     known = state.setdefault("cards", {})
     new_deals = []
 
+    now = time.time()
     for card in cards:
         old = known.get(card["url"], {})
         alerted_price = old.get("alerted_price")
+        out_since = old.get("out_since")
 
         if is_deal(card):
-            if alerted_price is None or card["price"] < alerted_price - 0.009:
+            out_since = None
+            # Nuovo avviso solo per offerte nuove o ribassi veri (i venditori si
+            # scavalcano di 1 centesimo alla volta: quelli non contano).
+            min_step = card["face"] * MIN_DROP / 100
+            if alerted_price is None or card["price"] <= alerted_price - min_step:
                 new_deals.append((card, alerted_price))
                 alerted_price = card["price"]
-        else:
-            alerted_price = None  # se torna in offerta in futuro, riavviso
+        elif alerted_price is not None:
+            # Fuori offerta: la "dimentico" solo dopo REARM_MINUTES, così se
+            # sparisce e ricompare subito non ti arriva lo stesso avviso due volte.
+            out_since = out_since or now
+            if now - out_since >= REARM_MINUTES * 60:
+                alerted_price, out_since = None, None
 
         known[card["url"]] = {
             "title": card["title"],
@@ -282,6 +296,7 @@ def check_once(session, state, first_run):
             "discount": card["discount"],
             "in_stock": card["in_stock"],
             "alerted_price": alerted_price,
+            "out_since": out_since,
         }
 
     if first_run:
