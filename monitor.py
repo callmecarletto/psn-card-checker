@@ -16,15 +16,19 @@ Variabili d'ambiente:
                    (misurato il 5/11/2026): lì usa 1.055. Da un IP italiano usa 1.
 """
 
+import base64
+import hashlib
 import html
 import json
 import os
 import re
+import subprocess
 import sys
 import time
 
 import requests
 from bs4 import BeautifulSoup
+from cryptography.fernet import Fernet, InvalidToken
 
 
 BASE_URL = "https://www.eneba.com"
@@ -55,6 +59,9 @@ MANUAL_RUN = (os.environ.get("MANUAL_RUN") or "").lower() == "true"
 PRICE_FACTOR = float(os.environ.get("PRICE_FACTOR") or 1)
 MIN_DROP = float(os.environ.get("MIN_DROP") or 2)
 REARM_MINUTES = float(os.environ.get("REARM_MINUTES") or 60)
+COMMANDS = os.environ.get("COMMANDS", "1") == "1"   # gestisce /start, approvazioni ecc.
+PERSIST_GIT = os.environ.get("PERSIST_GIT") == "1"    # salva subito su GitHub quando cambiano gli iscritti
+MAX_PENDING = 20
 APPROX = "≈ " if abs(PRICE_FACTOR - 1) > 1e-9 else ""
 
 PRICE_RE = re.compile(r"(\d{1,3}(?:\.\d{3})*,\d{2})\s*€")
@@ -63,19 +70,24 @@ FACE_RE = re.compile(r"Card\s+(\d+(?:[.,]\d+)?)\s*EUR", re.IGNORECASE)
 
 # ---------------------------------------------------------------- Telegram
 
-def send_telegram(message):
-    if not BOT_TOKEN or not CHAT_ID:
+def send_telegram(message, chat_id=None, buttons=None):
+    """Manda un messaggio. Senza chat_id va al proprietario del bot (TELEGRAM_CHAT_ID)."""
+    chat_id = chat_id or CHAT_ID
+    if not BOT_TOKEN or not chat_id:
         print("Telegram non configurato. Messaggio:\n" + message)
         return False
+    data = {
+        "chat_id": chat_id,
+        "text": message,
+        "parse_mode": "HTML",
+        "disable_web_page_preview": True,
+    }
+    if buttons:
+        data["reply_markup"] = json.dumps({"inline_keyboard": buttons})
     try:
         response = requests.post(
             f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
-            data={
-                "chat_id": CHAT_ID,
-                "text": message,
-                "parse_mode": "HTML",
-                "disable_web_page_preview": True,
-            },
+            data=data,
             timeout=20,
         )
         if response.ok:
@@ -183,18 +195,212 @@ def fetch_all_cards(session):
 
 # ---------------------------------------------------------------- Stato
 
+def _fernet():
+    # Il repo è pubblico: gli iscritti (chat ID e nomi) vengono salvati cifrati
+    # con una chiave ricavata dal token del bot, che resta segreto.
+    key = hashlib.sha256(b"psn-subscribers:" + (BOT_TOKEN or "").encode()).digest()
+    return Fernet(base64.urlsafe_b64encode(key))
+
+
+def load_subscribers(state):
+    blob = state.get("subscribers_enc")
+    if blob and BOT_TOKEN:
+        try:
+            return json.loads(_fernet().decrypt(blob.encode()))
+        except (InvalidToken, ValueError):
+            print("Iscritti illeggibili (token del bot cambiato?): riparto da zero.")
+    return {"approved": {}, "pending": {}}
+
+
 def load_state():
     if os.path.exists(STATE_FILE):
         with open(STATE_FILE) as file:
             data = json.load(file)
         if "eneba" in data:
-            return data["eneba"], False
-    return {"cards": {}, "fail_count": 0, "blind_alert_sent": False}, True
+            state = data["eneba"]
+            state["_subs"] = load_subscribers(state)
+            return state, False
+    return {"cards": {}, "fail_count": 0, "blind_alert_sent": False,
+            "_subs": {"approved": {}, "pending": {}}}, True
 
 
 def save_state(state):
+    data = {k: v for k, v in state.items() if not k.startswith("_")}
+    if BOT_TOKEN and "_subs" in state:
+        plain = json.dumps(state["_subs"], ensure_ascii=False).encode()
+        data["subscribers_enc"] = _fernet().encrypt(plain).decode()
     with open(STATE_FILE, "w") as file:
-        json.dump({"eneba": state}, file, indent=2, ensure_ascii=False)
+        json.dump({"eneba": data}, file, indent=2, ensure_ascii=False)
+
+
+def persist_to_github():
+    """Committa subito state.json (usato quando cambiano gli iscritti)."""
+    if not PERSIST_GIT:
+        return
+    ref = os.environ.get("GITHUB_REF_NAME", "main")
+    cmds = [
+        ["git", "add", "state.json"],
+        ["git", "commit", "-q", "-m", "Update subscribers"],
+        ["git", "pull", "-q", "--rebase", "-X", "theirs", "origin", ref],
+        ["git", "push", "-q", "origin", f"HEAD:{ref}"],
+    ]
+    for cmd in cmds:
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0 and cmd[1] != "commit":
+            print(f"Salvataggio su GitHub non riuscito ({' '.join(cmd[:2])}): {result.stderr[:200]}")
+            return
+
+
+# ---------------------------------------------------------------- Iscritti
+
+def subscriber_ids(state):
+    return list(state.get("_subs", {}).get("approved", {}).keys())
+
+
+def send_to_all(state, message):
+    """Manda al proprietario e a tutti gli iscritti. Ritorna l'esito per il proprietario."""
+    ok = send_telegram(message)
+    for chat_id in subscriber_ids(state):
+        send_telegram(message, chat_id=chat_id)
+    return ok
+
+
+def tg_call(method, **params):
+    try:
+        r = requests.post(f"https://api.telegram.org/bot{BOT_TOKEN}/{method}", data=params, timeout=20)
+        return r.json()
+    except (requests.RequestException, ValueError) as error:
+        print(f"Errore Telegram ({method}): {error}")
+        return None
+
+
+def display_name(user):
+    name = " ".join(x for x in [user.get("first_name"), user.get("last_name")] if x) or "Senza nome"
+    if user.get("username"):
+        name += f" (@{user['username']})"
+    return name
+
+
+def welcome_text():
+    return (
+        "✅ <b>Sei dentro!</b>\n\n"
+        "Ti scrivo qui quando una PSN card italiana su Eneba è scontata almeno del "
+        f"<b>{fmt_pct(MIN_DISCOUNT)}%</b>. Le offerte finiscono in fretta: quando arriva "
+        "l'avviso conviene aprire subito il link.\n\n"
+        "Per non ricevere più avvisi scrivi /stop."
+    )
+
+
+def handle_owner_command(state, text):
+    subs = state["_subs"]
+    parts = text.split()
+    cmd = parts[0].split("@")[0].lower() if parts else ""
+    arg = parts[1] if len(parts) > 1 else ""
+    if cmd == "/approva" and arg:
+        return approve(state, arg)
+    if cmd in ("/rifiuta", "/rimuovi") and arg:
+        name = subs["pending"].pop(arg, None) or subs["approved"].pop(arg, None)
+        if not name:
+            send_telegram(f"Non trovo nessuno con ID {html.escape(arg)}.")
+            return False
+        send_telegram(f"🗑 Rimosso: {html.escape(name)}")
+        return True
+    if cmd == "/lista":
+        lines = ["<b>Iscritti</b>"] + [f"• {html.escape(n)} — <code>{i}</code>" for i, n in subs["approved"].items()]
+        if not subs["approved"]:
+            lines.append("nessuno")
+        if subs["pending"]:
+            lines += ["", "<b>In attesa</b>"] + [f"• {html.escape(n)} — <code>{i}</code>" for i, n in subs["pending"].items()]
+        lines += ["", "Rimuovere qualcuno: /rimuovi ID"]
+        send_telegram("\n".join(lines))
+        return False
+    send_telegram(
+        "Comandi:\n/lista — chi riceve gli avvisi\n/approva ID — approva una richiesta\n"
+        "/rifiuta ID — rifiuta una richiesta\n/rimuovi ID — toglie un iscritto\n\n"
+        "Per invitare qualcuno: digli di aprire questo bot su Telegram e premere Avvia (/start)."
+    )
+    return False
+
+
+def approve(state, chat_id):
+    subs = state["_subs"]
+    name = subs["pending"].pop(chat_id, None)
+    if not name:
+        send_telegram(f"Nessuna richiesta in attesa con ID {html.escape(chat_id)}.")
+        return False
+    subs["approved"][chat_id] = name
+    send_telegram(f"✅ Approvato: {html.escape(name)}")
+    send_telegram(welcome_text(), chat_id=chat_id)
+    return True
+
+
+def handle_guest_message(state, chat_id, user, text):
+    subs = state["_subs"]
+    cmd = text.split()[0].split("@")[0].lower() if text.split() else ""
+    name = display_name(user)
+    if cmd == "/stop":
+        removed = subs["approved"].pop(chat_id, None) or subs["pending"].pop(chat_id, None)
+        send_telegram("👋 Fatto, non riceverai più avvisi. Per tornare scrivi /start.", chat_id=chat_id)
+        if removed:
+            send_telegram(f"👋 {html.escape(removed)} si è disiscritto.")
+        return bool(removed)
+    if chat_id in subs["approved"]:
+        send_telegram("Sei già iscritto: ti scrivo appena c'è un'offerta. Per uscire scrivi /stop.", chat_id=chat_id)
+        return False
+    if chat_id in subs["pending"]:
+        send_telegram("La tua richiesta è in attesa di approvazione.", chat_id=chat_id)
+        return False
+    if cmd != "/start":
+        send_telegram("Questo bot avvisa degli sconti sulle PSN card su Eneba. Scrivi /start per chiedere di ricevere gli avvisi.", chat_id=chat_id)
+        return False
+    if len(subs["pending"]) >= MAX_PENDING:
+        return False
+    subs["pending"][chat_id] = name
+    send_telegram("📨 Richiesta inviata. Ti scrivo appena viene approvata.", chat_id=chat_id)
+    send_telegram(
+        f"🔔 <b>Nuova richiesta</b>\n\n{html.escape(name)} vuole ricevere gli avvisi PSN.",
+        buttons=[[{"text": "✅ Approva", "callback_data": f"ok:{chat_id}"},
+                  {"text": "❌ Rifiuta", "callback_data": f"no:{chat_id}"}]],
+    )
+    return True
+
+
+def process_updates(state):
+    """Legge i messaggi arrivati al bot (iscrizioni e comandi). Ritorna True se gli iscritti sono cambiati."""
+    if not COMMANDS or not BOT_TOKEN or not CHAT_ID:
+        return False
+    result = tg_call("getUpdates", offset=state.get("tg_offset", 0), timeout=0,
+                     allowed_updates=json.dumps(["message", "callback_query"]))
+    if not result or not result.get("ok"):
+        return False
+    changed = False
+    for update in result.get("result", []):
+        state["tg_offset"] = update["update_id"] + 1
+        try:
+            if "callback_query" in update:
+                query = update["callback_query"]
+                tg_call("answerCallbackQuery", callback_query_id=query["id"])
+                if str(query["from"]["id"]) != str(CHAT_ID):
+                    continue
+                action, _, target = (query.get("data") or "").partition(":")
+                if action == "ok":
+                    changed |= approve(state, target)
+                elif action == "no":
+                    changed |= handle_owner_command(state, f"/rifiuta {target}")
+                continue
+            msg = update.get("message") or {}
+            chat = msg.get("chat", {})
+            if chat.get("type") != "private":
+                continue
+            chat_id = str(chat["id"])
+            text = (msg.get("text") or "").strip()
+            if chat_id == str(CHAT_ID):
+                changed |= handle_owner_command(state, text)
+            else:
+                changed |= handle_guest_message(state, chat_id, msg.get("from", {}), text)
+        except Exception as error:  # un messaggio strano non deve fermare il bot
+            print(f"Messaggio Telegram non gestito: {error}")
+    return changed
 
 
 # ---------------------------------------------------------------- Messaggi
@@ -313,7 +519,7 @@ def check_once(session, state, first_run):
         state["_activation_sent_now"] = True
     else:
         for card, previous in new_deals:
-            if not send_telegram(deal_message(card, previous)):
+            if not send_to_all(state, deal_message(card, previous)):
                 known[card["url"]]["alerted_price"] = previous  # riprovo al prossimo controllo
 
     return cards
@@ -329,6 +535,9 @@ def main():
     last_cards = None
 
     while True:
+        if process_updates(state):
+            save_state(state)
+            persist_to_github()
         cards = check_once(session, state, first_run)
         if cards is not None:
             last_cards = cards
