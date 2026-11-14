@@ -3,8 +3,8 @@
     "cards": {
       "https://www.eneba.com/it/psn-playstation-network-card-100-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 100 EUR (IT) PSN Key ITALY",
-        "price": 93.17,
-        "discount": 6.8,
+        "price": 89.1,
+        "discount": 10.9,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
@@ -43,24 +43,24 @@
       },
       "https://www.eneba.com/it/psn-playstation-network-card-80-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 80 EUR (IT) PSN Key ITALY",
-        "price": 72.86,
-        "discount": 8.9,
+        "price": 73.22,
+        "discount": 8.5,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
       },
       "https://www.eneba.com/it/psn-playstation-network-card-25-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 25 EUR (IT) PSN Key ITALY",
-        "price": 29.4,
-        "discount": -17.6,
+        "price": 29.36,
+        "discount": -17.4,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
       },
       "https://www.eneba.com/it/psn-playstation-network-card-15-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 15 EUR (IT) PSN Key ITALY",
-        "price": 16.65,
-        "discount": -11.0,
+        "price": 16.62,
+        "discount": -10.8,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
@@ -91,7 +91,7 @@
       },
       "https://www.eneba.com/it/psn-playstation-network-card-45-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 45 EUR (IT) PSN Key ITALY",
-        "price": 48.39,
+        "price": 48.37,
         "discount": -7.5,
         "in_stock": true,
         "alerted_price": null,
@@ -357,6 +357,6 @@
     "fail_count": 0,
     "blind_alert_sent": false,
     "tg_offset": 444165922,
-    "subscribers_enc": "gAAAAABq-Go3zycjVm2bGCQjar7mEm4fuBFSbbRu79WGLfe14Y_Qs_-pFpkLQVq9aIyNV1Dm5ux_fPGtMs6eF5XfS6dN3ZNtLP9XDpk5l2AJC2XdvNJhTWn48FYXFMaN5aZCShuy-zma_qgHn8lno6uujDr5NZrZqxGozI1jL86xzFOiJIKtl9iEISEIQ1bRmCkDfGxFm2QZ"
+    "subscribers_enc": "gAAAAABq-LnxJr97qSKBxnJ4un1FsseRRnSgNS8PyJzG2I_DeGTT6byjYhMpmCE5k4kN04vkAWdXHeN6_FfQz7hxbuWN88ezD-mg1DSDhyRjXv5RP6-7oug2MmTtOxrdAyHnWRBe5er3ItGrrtEiddncCAbFrQONwsrvz24b31CntGLsCECKnBPUsZV2-oratW-tcBXcPEdJ"
   }
 }
