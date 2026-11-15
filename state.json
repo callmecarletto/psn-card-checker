@@ -51,16 +51,16 @@
       },
       "https://www.eneba.com/it/psn-playstation-network-card-25-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 25 EUR (IT) PSN Key ITALY",
-        "price": 29.35,
-        "discount": -17.4,
+        "price": 29.31,
+        "discount": -17.2,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
       },
       "https://www.eneba.com/it/psn-playstation-network-card-15-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 15 EUR (IT) PSN Key ITALY",
-        "price": 16.6,
-        "discount": -10.7,
+        "price": 16.56,
+        "discount": -10.4,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
@@ -91,16 +91,16 @@
       },
       "https://www.eneba.com/it/psn-playstation-network-card-45-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 45 EUR (IT) PSN Key ITALY",
-        "price": 48.29,
-        "discount": -7.3,
+        "price": 48.15,
+        "discount": -7.0,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
       },
       "https://www.eneba.com/it/psn-playstation-network-card-90-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 90 EUR (IT) PSN Key ITALY",
-        "price": 101.1,
-        "discount": -12.3,
+        "price": 101.0,
+        "discount": -12.2,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
@@ -115,7 +115,7 @@
       },
       "https://www.eneba.com/it/psn-playstation-network-card-200-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 200 EUR (IT) PSN Key ITALY",
-        "price": 173.82,
+        "price": 173.73,
         "discount": 13.1,
         "in_stock": true,
         "alerted_price": null,
@@ -123,8 +123,8 @@
       },
       "https://www.eneba.com/it/psn-playstation-network-card-250-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 250 EUR (IT) PSN Key ITALY",
-        "price": 218.14,
-        "discount": 12.7,
+        "price": 218.06,
+        "discount": 12.8,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
@@ -357,6 +357,6 @@
     "fail_count": 0,
     "blind_alert_sent": false,
     "tg_offset": 444165922,
-    "subscribers_enc": "gAAAAABq-Ql4dWwa6PnpMPVuuAfO1rTfiQjotUfPxbTgPrvtho1ejzs914CjwiYIWpFJeQonXMfSzEhWQK0zXdF_IUfjj0f4aysdqQLbjYKKn9m7YKDfejaAnwWtnqnR2WDLTiw4Vce1e-MCmMP0mX55IXMmrmvi6GW7ycCMXFskkeWG4p-zLdDQX9HSKrOKDoWjb_wWz2iM"
+    "subscribers_enc": "gAAAAABq-VkDpHGRWR9Wul3eiC_sUm0G2kAJQNWAGYk-ehwniu5u5LlpYYHJdPpyKigCKEJcg5J7rffIHaMMzcL-ktaDqRicji_S8y_rGfRtcs4pd12CIUCUutJBvRMglt4T0irsFFcYXfdQe9bZP8hZ3yDjKqpuS4TTQ-8aO2eDk5FKeMr1fFegXzrbBBSEn0IClTSGKag6"
   }
 }
