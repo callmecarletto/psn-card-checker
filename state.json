@@ -3,56 +3,56 @@
     "cards": {
       "https://www.eneba.com/it/psn-playstation-network-card-100-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 100 EUR (IT) PSN Key ITALY",
-        "price": 91.94,
-        "discount": 8.1,
+        "price": 90.04,
+        "discount": 10.0,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
       },
       "https://www.eneba.com/it/psn-playstation-network-card-10-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 10 EUR (IT) PSN Key ITALY",
-        "price": 9.26,
-        "discount": 7.4,
+        "price": 9.25,
+        "discount": 7.5,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
       },
       "https://www.eneba.com/it/psn-playstation-network-card-20-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 20 EUR (IT) PSN Key ITALY",
-        "price": 17.38,
-        "discount": 13.1,
+        "price": 17.97,
+        "discount": 10.2,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
       },
       "https://www.eneba.com/it/psn-playstation-network-card-50-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 50 EUR (IT) PSN Key ITALY",
-        "price": 44.51,
-        "discount": 11.0,
+        "price": 44.47,
+        "discount": 11.1,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
       },
       "https://www.eneba.com/it/psn-playstation-network-card-60-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 60 EUR (IT) PSN Key ITALY",
-        "price": 53.4,
-        "discount": 11.0,
+        "price": 53.24,
+        "discount": 11.3,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
       },
       "https://www.eneba.com/it/psn-playstation-network-card-80-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 80 EUR (IT) PSN Key ITALY",
-        "price": 72.24,
-        "discount": 9.7,
+        "price": 72.02,
+        "discount": 10.0,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
       },
       "https://www.eneba.com/it/psn-playstation-network-card-25-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 25 EUR (IT) PSN Key ITALY",
-        "price": 28.71,
-        "discount": -14.8,
+        "price": 28.68,
+        "discount": -14.7,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
@@ -83,16 +83,16 @@
       },
       "https://www.eneba.com/it/psn-playstation-network-card-150-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 150 EUR (IT) PSN Key ITALY",
-        "price": 133.41,
-        "discount": 11.1,
+        "price": 125.93,
+        "discount": 16.0,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
       },
       "https://www.eneba.com/it/psn-playstation-network-card-45-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 45 EUR (IT) PSN Key ITALY",
-        "price": 46.44,
-        "discount": -3.2,
+        "price": 46.4,
+        "discount": -3.1,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
@@ -131,7 +131,7 @@
       },
       "https://www.eneba.com/it/psn-playstation-network-card-95-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 95 EUR (IT) PSN Key ITALY",
-        "price": 95.08,
+        "price": 95.06,
         "discount": -0.1,
         "in_stock": true,
         "alerted_price": null,
@@ -357,6 +357,6 @@
     "fail_count": 0,
     "blind_alert_sent": false,
     "tg_offset": 444165922,
-    "subscribers_enc": "gAAAAABrAW5wj_F8wTqW-dyONxA73fVCoVXMFXq_FTSlCDJee5zK8gDdcq29aJyUAsk6b8NRrNBpA_YpKfJgRFw6XHKRhrmGdWCHpJO8lIdd9x_5EtTcT7p7aTQZNgBcg8eOXdmoMLx8Au23QemP2g2fWZv0cmwJue9RrrIN_I8xBQ835ihAOS9v5u9Yj_xv7kvIaT7MB2Xn"
+    "subscribers_enc": "gAAAAABrAb4w7YIQGzcwWMbcCswRRGem7EYAULQEFAEcWbAgHu4w1sCR_KFX_BdaHQXuR4tatWywweB9gel0hyiwMkjfDv6G5wtDKYlpju71_sNGk_gfCGonQTv4mgdfP67hTPE7vvkwUbuvky4Ddzy_Fx6CigiFqNbxAm30MsgtyWJxiKREkBD9OccN_H_ShZ2RcrrnkTjI"
   }
 }
