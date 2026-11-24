@@ -27,8 +27,8 @@
       },
       "https://www.eneba.com/it/psn-playstation-network-card-50-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 50 EUR (IT) PSN Key ITALY",
-        "price": 44.86,
-        "discount": 10.3,
+        "price": 44.53,
+        "discount": 10.9,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
@@ -43,8 +43,8 @@
       },
       "https://www.eneba.com/it/psn-playstation-network-card-80-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 80 EUR (IT) PSN Key ITALY",
-        "price": 71.88,
-        "discount": 10.2,
+        "price": 71.8,
+        "discount": 10.3,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
@@ -83,16 +83,16 @@
       },
       "https://www.eneba.com/it/psn-playstation-network-card-150-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 150 EUR (IT) PSN Key ITALY",
-        "price": 122.8,
-        "discount": 18.1,
+        "price": 133.53,
+        "discount": 11.0,
         "in_stock": true,
-        "alerted_price": 122.8,
+        "alerted_price": null,
         "out_since": null
       },
       "https://www.eneba.com/it/psn-playstation-network-card-45-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 45 EUR (IT) PSN Key ITALY",
-        "price": 45.34,
-        "discount": -0.8,
+        "price": 45.19,
+        "discount": -0.4,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
@@ -115,7 +115,7 @@
       },
       "https://www.eneba.com/it/psn-playstation-network-card-200-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 200 EUR (IT) PSN Key ITALY",
-        "price": 175.06,
+        "price": 174.91,
         "discount": 12.5,
         "in_stock": true,
         "alerted_price": null,
@@ -357,6 +357,6 @@
     "fail_count": 0,
     "blind_alert_sent": false,
     "tg_offset": 444165922,
-    "subscribers_enc": "gAAAAABrBOnRbX-gYfEAvFMCebYqFiS2FOmqItr1NHjkMGAcK-l2WX2POs-3mfH3VwTn1gOYG_N2YxCYfXgMBs8ErN3pCQDWV07-B97SR-A877h7yBtboRlUNiDjqf95p3MOr7rE0QM62VwOijEyyK5tIUa6DyhxyJVuuOmzK18Ha6mWblPygngfZoT6s3GsTIWQSNutLTMg"
+    "subscribers_enc": "gAAAAABrBTmZWTjeWaL8Nmn4j6um95TSBhciH8-Zic2HuYGqwSH5RGo59-eo7FeCmdbmBE2l3bHS8tIyMy7zqK63JdjpAt8OEVkHaJ4_L8mLfFOz0sEAltrBaiP4HhOi4NbPzAfsgpBRiPGThN1fg6guCqEB7ptGVi7JyE4kkiLiOcA7LGc8x8YZ8dOhn3LFSlS6bqRqg2dm"
   }
 }
