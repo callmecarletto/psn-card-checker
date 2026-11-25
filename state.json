@@ -19,24 +19,24 @@
       },
       "https://www.eneba.com/it/psn-playstation-network-card-20-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 20 EUR (IT) PSN Key ITALY",
-        "price": 17.14,
-        "discount": 14.3,
+        "price": 16.82,
+        "discount": 15.9,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
       },
       "https://www.eneba.com/it/psn-playstation-network-card-50-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 50 EUR (IT) PSN Key ITALY",
-        "price": 39.81,
-        "discount": 20.4,
+        "price": 39.62,
+        "discount": 20.8,
         "in_stock": true,
         "alerted_price": 37.91,
         "out_since": null
       },
       "https://www.eneba.com/it/psn-playstation-network-card-60-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 60 EUR (IT) PSN Key ITALY",
-        "price": 53.19,
-        "discount": 11.4,
+        "price": 51.81,
+        "discount": 13.6,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
@@ -51,8 +51,8 @@
       },
       "https://www.eneba.com/it/psn-playstation-network-card-25-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 25 EUR (IT) PSN Key ITALY",
-        "price": 27.56,
-        "discount": -10.2,
+        "price": 27.53,
+        "discount": -10.1,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
@@ -75,32 +75,32 @@
       },
       "https://www.eneba.com/it/psn-playstation-network-card-120-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 120 EUR (IT) PSN Key ITALY",
-        "price": 114.27,
-        "discount": 4.8,
+        "price": 112.12,
+        "discount": 6.6,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
       },
       "https://www.eneba.com/it/psn-playstation-network-card-150-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 150 EUR (IT) PSN Key ITALY",
-        "price": 118.48,
-        "discount": 21.0,
+        "price": 104.96,
+        "discount": 30.0,
         "in_stock": true,
-        "alerted_price": 118.48,
+        "alerted_price": 104.97,
         "out_since": null
       },
       "https://www.eneba.com/it/psn-playstation-network-card-45-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 45 EUR (IT) PSN Key ITALY",
-        "price": 44.67,
-        "discount": 0.7,
+        "price": 44.64,
+        "discount": 0.8,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
       },
       "https://www.eneba.com/it/psn-playstation-network-card-90-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 90 EUR (IT) PSN Key ITALY",
-        "price": 89.73,
-        "discount": 0.3,
+        "price": 89.23,
+        "discount": 0.9,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
@@ -123,10 +123,10 @@
       },
       "https://www.eneba.com/it/psn-playstation-network-card-250-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 250 EUR (IT) PSN Key ITALY",
-        "price": 193.36,
-        "discount": 22.7,
+        "price": 215.76,
+        "discount": 13.7,
         "in_stock": true,
-        "alerted_price": 193.36,
+        "alerted_price": null,
         "out_since": null
       },
       "https://www.eneba.com/it/psn-playstation-network-card-95-eur-it-psn-key-italy": {
@@ -147,8 +147,8 @@
       },
       "https://www.eneba.com/it/psn-playstation-network-card-40-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 40 EUR (IT) PSN Key ITALY",
-        "price": 41.71,
-        "discount": -4.3,
+        "price": 40.1,
+        "discount": -0.2,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
@@ -357,6 +357,6 @@
     "fail_count": 0,
     "blind_alert_sent": false,
     "tg_offset": 444165922,
-    "subscribers_enc": "gAAAAABrBshKrRXWTbbM3hGPcq595F69q37lxn9zZvgzik9oYQXbOZzYcKv3lLgEOL1Bn0Mi-pqLdn7_5_W50Wxm1cDtfLoYcSQylH2V8fPiL4gKmjCRH0OjkkWlVkXnDeK-aVZZZfd_goyfoWiqQ-Qyq6J6rcBpP_lClKoQzWnmlqg79jAB5Z-cRc4bXus0XF_75pvfK_Oc"
+    "subscribers_enc": "gAAAAABrBxfRcnwIr5tDl6sz4y4ywtrVv9gU6vGrKRofwini_oxeT4tRJmltRsmKK-6WJQ89LxvnuVXmUusymUH6vputdCSAxG3f5ndLJxqbCyNFA-7Ny25q6uxTYAksWlOnFKVIeeV_W8ndGy87vjW-4ZEHujUBkg8m4iaTQ0L8i862RlnaffFJk4QoaXCjMODRonCV5DPI"
   }
 }
