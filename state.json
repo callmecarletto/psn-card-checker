@@ -11,24 +11,24 @@
       },
       "https://www.eneba.com/it/psn-playstation-network-card-10-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 10 EUR (IT) PSN Key ITALY",
-        "price": 8.49,
-        "discount": 15.1,
+        "price": 8.45,
+        "discount": 15.5,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
       },
       "https://www.eneba.com/it/psn-playstation-network-card-20-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 20 EUR (IT) PSN Key ITALY",
-        "price": 18.36,
-        "discount": 8.2,
+        "price": 14.22,
+        "discount": 28.9,
         "in_stock": true,
-        "alerted_price": null,
+        "alerted_price": 14.22,
         "out_since": null
       },
       "https://www.eneba.com/it/psn-playstation-network-card-50-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 50 EUR (IT) PSN Key ITALY",
-        "price": 43.02,
-        "discount": 14.0,
+        "price": 43.45,
+        "discount": 13.1,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
@@ -51,16 +51,16 @@
       },
       "https://www.eneba.com/it/psn-playstation-network-card-25-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 25 EUR (IT) PSN Key ITALY",
-        "price": 26.44,
-        "discount": -5.8,
+        "price": 18.01,
+        "discount": 28.0,
         "in_stock": true,
-        "alerted_price": null,
+        "alerted_price": 18.01,
         "out_since": null
       },
       "https://www.eneba.com/it/psn-playstation-network-card-15-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 15 EUR (IT) PSN Key ITALY",
-        "price": 14.54,
-        "discount": 3.1,
+        "price": 14.51,
+        "discount": 3.3,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
@@ -83,7 +83,7 @@
       },
       "https://www.eneba.com/it/psn-playstation-network-card-150-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 150 EUR (IT) PSN Key ITALY",
-        "price": 137.49,
+        "price": 137.5,
         "discount": 8.3,
         "in_stock": true,
         "alerted_price": null,
@@ -91,8 +91,8 @@
       },
       "https://www.eneba.com/it/psn-playstation-network-card-45-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 45 EUR (IT) PSN Key ITALY",
-        "price": 43.11,
-        "discount": 4.2,
+        "price": 43.07,
+        "discount": 4.3,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
@@ -139,8 +139,8 @@
       },
       "https://www.eneba.com/it/psn-playstation-network-card-30-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 30 EUR (IT) PSN Key ITALY",
-        "price": 32.25,
-        "discount": -7.5,
+        "price": 32.19,
+        "discount": -7.3,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
@@ -179,8 +179,8 @@
       },
       "https://www.eneba.com/it/psn-playstation-network-card-11-eur-it-psn-key-italy": {
         "title": "PlayStation Network Card 11 EUR (IT) PSN Key ITALY",
-        "price": 10.57,
-        "discount": 3.9,
+        "price": 10.54,
+        "discount": 4.2,
         "in_stock": true,
         "alerted_price": null,
         "out_since": null
@@ -357,6 +357,6 @@
     "fail_count": 0,
     "blind_alert_sent": false,
     "tg_offset": 444165922,
-    "subscribers_enc": "gAAAAABrCtNj4N6FSpzN9dhQ-Xwp2P0bItiehGDKf2U22UsMUvWlvtIvtJlPwldS-tPoKggkO3lM5glRSMgkofabgh2fFldjQlu6WylFHbGcYAj9Xz-nAW1NZ7Ae7DHl3G0UiMHW_leR6RDnqKKCL8RQ87_ELpEcnKFsvs0j8XPmAOvsDaDY_uIQMdwEjDKOwu0C7mNaYpkj"
+    "subscribers_enc": "gAAAAABrCyMEApYR8OuLYk5G_At2QcM2bMxE3DQOVoE4FhRQd1UdpZqK6r__tcuU11fecbF0nZYlzvRbbqJdmMyzktCaOvr-vdgnQXwcJyjk-LJANT0WZqfq2_q6dMnW6Dxmpu_FkHY4o_pbHI8IDoLZFVlH8NwsuZX5IwJt_W2cg1f1wVYH0yDALlk98CNEfQ6qFPDLw8Fn"
   }
 }
